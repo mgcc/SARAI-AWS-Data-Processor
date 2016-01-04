@@ -98,15 +98,11 @@ public class WeatherLinkHandler extends DefaultHandler {
     }
     
     public HashMap getWeatherData() {
-        for (Object key : weatherDataMap.keySet()) {
-//            String key = entry.getKey();
-            String value = (String) weatherDataMap.get(key);
-            
-            System.out.println("[ " + key + ", " + value + "]");
-            // do stuff
-        }
-        
-
+//        for (Object key : weatherDataMap.keySet()) {
+//            String value = (String) weatherDataMap.get(key);
+//            
+//            System.out.println("[ " + key + ", " + value + "]");
+//        }
         
         return weatherDataMap;
     }

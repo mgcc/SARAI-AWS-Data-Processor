@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.TimerTask;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
@@ -26,45 +27,37 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author monina
  */
-public class WeatherLinkDataCollector implements Runnable {
+public class WeatherLinkDataCollector extends TimerTask {
     public final static String TYPE = "WEATHERLINK";
     
-    private int interval = 10000; //scrape interval in miliseconds
     private String link;
     
     static final String outputEncoding = "UTF-8";
     
-    public WeatherLinkDataCollector(String link, int interval) {
-        //this.interval = interval;
-        this.link = link;    
+    public WeatherLinkDataCollector(String link) {
+        this.link = link; 
     }
 
     @Override
-    public void run() {
-//        while(true) {
-//            System.out.println("Running");
-//            try {    
-//                Thread.sleep(interval);
-//            } catch (InterruptedException ex) {
-//                Logger.getLogger(WeatherLinkDataCollector.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-        
+    public void run() {        
         try {
-            XMLReader xr = XMLReaderFactory.createXMLReader();
-            
-            WeatherLinkHandler handler = new WeatherLinkHandler();
-            
+            //Set up needed data
+            XMLReader xr = XMLReaderFactory.createXMLReader();            
+            WeatherLinkHandler handler = new WeatherLinkHandler();            
             xr.setContentHandler(handler);
-            xr.setErrorHandler(handler);
+            xr.setErrorHandler(handler);            
+            URL oracle = new URL(link);
             
-            URL oracle = new URL("http://www.weatherlink.com/xml.php?user=uplbsaraivp1&pass=uplbs4r41vp1");
-            
+            //Get weather data from online source
             InputSource is = new InputSource(new InputStreamReader(oracle.openStream()));
-            
             xr.parse(is);
             
-            handler.getWeatherData();
+            //Processing??
+            
+            //Store weather data in MongoDB
+            
+            //handler.getWeatherData();
+            System.out.println("Done");
         } catch (SAXException ex) {
             Logger.getLogger(WeatherLinkDataCollector.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
@@ -72,16 +65,7 @@ public class WeatherLinkDataCollector implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(WeatherLinkDataCollector.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-
-	
-//        FileReader r = new FileReader(args[i]);
-//        xr.parse(new InputSource(r));
-	
-
-        
+   
     }
-    
-    
+  
 }

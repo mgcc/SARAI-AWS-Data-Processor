@@ -13,7 +13,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 import org.bson.Document;
 import sarai.aws.data.processor.collection.weatherlink.WeatherLinkDataCollector;
 
@@ -27,10 +29,11 @@ public class SARAIAWSDataProcessor {
      * @param args the command line arguments
      */
     
-    ArrayList<Thread> weatherThreads;
+    ArrayList<Timer> weatherTimers;
+    
     
     private void init() {
-        weatherThreads = new ArrayList<>();
+        weatherTimers = new ArrayList<>();
     }
     
     public SARAIAWSDataProcessor() {
@@ -41,31 +44,26 @@ public class SARAIAWSDataProcessor {
         MongoClient mongoClient = new MongoClient("localhost", 3001); //port should be in args
         MongoDatabase db = mongoClient.getDatabase("meteor");
         MongoCollection collection = db.getCollection("AutomaticWeatherStations");
-//        MongoIterable<String> dbs = mongoClient.listDatabaseNames();        
-//        System.out.println("Names: \n");
-//        for (String name : dbs) {
-//            System.out.println(name);
-//        } 
-
-        
-        
+       
         FindIterable<Document> weatherStations = collection.find();
         
         weatherStations.forEach(new Block<Document>() {
             @Override
             public void apply(final Document document) {
-                //System.out.println(document.getString("feed"));
+                
+                //Get relevant data from document
                 String feed = document.getString("feed");
-                int interval = 1000;
-                //Thread nt = new Thread(new WeatherLinkDataCollector(feed, interval));
-                //weatherThreads.add(nt);
-                Timer t = 
+                int interval = ((Number) document.get("interval")).intValue();
+                
+                //Create new Timer class to add to the list
+                Timer t = new Timer();
+                t.scheduleAtFixedRate(new WeatherLinkDataCollector(feed), new Date(), interval);
+                        
+                //@TODO: At timer creation, fetch data right away, then settle into a 'X minutes after the hour' routine.
+                weatherTimers.add(t);
+                
             }
         });
-        
-//        for (Thread t : weatherThreads) {
-//            t.start();
-//        }
 
     }
     
