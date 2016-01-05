@@ -6,11 +6,8 @@
 package sarai.aws.data.processor.collection.weatherlink;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-import sarai.aws.data.processor.WeatherData;
 
 /**
  *
@@ -19,14 +16,12 @@ import sarai.aws.data.processor.WeatherData;
 public class WeatherLinkHandler extends DefaultHandler {
     
     private HashMap weatherDataMap;
-    private WeatherData weatherData;
     
     private String element = "";
     private StringBuilder sb;
 
     public WeatherLinkHandler() {
         this.weatherDataMap = new HashMap<>();
-        this.weatherData = new WeatherData();
     }
     
     @Override
