@@ -19,12 +19,11 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bson.Document;
@@ -32,19 +31,11 @@ import org.bson.conversions.Bson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 /**
  *
  * @author monina
  */
-public class SARAIAWSDataProcessor {
-
-    /**
-     * @param args the command line arguments
-     */
-    
-    ArrayList<Timer> weatherTimers;
-    SimpleDateFormat sdf;
+public class MaintenanceTask extends TimerTask{
     
     int YEAR_CURRENT;
     int MONTH_CURRENT;
@@ -54,7 +45,7 @@ public class SARAIAWSDataProcessor {
     MongoCollection weatherData;
     MongoCollection settings;
     
-    private void init() {      
+    private void init() {
         MongoClient mongoClient = new MongoClient("localhost", 3001); //port should be in args
         MongoDatabase db = mongoClient.getDatabase("meteor");
     
@@ -63,19 +54,21 @@ public class SARAIAWSDataProcessor {
         settings = db.getCollection("dss-settings");
     }
     
-    public SARAIAWSDataProcessor() throws MalformedURLException, IOException {
+    @Override
+    public void run() {
+        System.out.println("Updating...");
+        
         init();
         
-        System.out.println("Starting...");
+        try {
+            updateWeatherData();
+        } catch (IOException ex) {
+            Logger.getLogger(MaintenanceTask.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        updateWeatherData();
-        
-        maintainData();
-
     }
     
-    private void updateWeatherData() throws MalformedURLException, IOException {
-        
+    private void updateWeatherData() throws MalformedURLException, IOException {        
         //Get Weather Stations
         FindIterable<Document> weatherStations = awsCollection.find();
         
@@ -167,10 +160,12 @@ public class SARAIAWSDataProcessor {
     }
     
     private void maintainData() {
-        System.out.println("Entering maintenance mode...");
+        System.out.println("Entering maintenance mode");
+        Date date=new Date();
+        Timer timer = new Timer();
         
-        Timer t = new Timer();
-        t.schedule(new MaintenanceTask(), new Date(), 24*60*60*1000);
+        timer.schedule(new MaintenanceTask(), date, 24*60*60*1000);
+
     }
     
     //@param month zero indexed
@@ -353,8 +348,6 @@ public class SARAIAWSDataProcessor {
         return nextDate;
     }
     
-    public static void main(String[] args) throws IOException {
-        SARAIAWSDataProcessor sawsdp = new SARAIAWSDataProcessor();
-    }
+    
     
 }
