@@ -7,6 +7,17 @@ The program fetches weather data from 10 stations in succession then sleeps for 
 
 https://www.wunderground.com/weather/api/
 
+
+#Additional Notes
+Typical output looks like this:
+1: Updated IILOCOSR3 (20160627)
+2: Updated ICAGAYAN2 (20160627)
+3: Updated IILOCOSR4 (20160627)
+4: Updated IBULACAN2 (20160627)
+5: MISSING DATA ICORDILL2 (20160627)
+
+'MISSING DATA' means that no data was returned by weahter underground.
+
 #usage
 java -jar SARAI-AWS-Data-Processor.jar &lt;host&gt; &lt;port&gt;
 
