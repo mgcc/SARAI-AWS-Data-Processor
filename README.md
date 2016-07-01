@@ -9,12 +9,12 @@ https://www.wunderground.com/weather/api/
 
 
 #Additional Notes
-Typical output looks like this:
-1: Updated IILOCOSR3 (20160627)
-2: Updated ICAGAYAN2 (20160627)
-3: Updated IILOCOSR4 (20160627)
-4: Updated IBULACAN2 (20160627)
-5: MISSING DATA ICORDILL2 (20160627)
+Typical output looks like this:<br/>
+1: Updated IILOCOSR3 (20160627)<br/>
+2: Updated ICAGAYAN2 (20160627)<br/>
+3: Updated IILOCOSR4 (20160627)<br/>
+4: Updated IBULACAN2 (20160627)<br/>
+5: MISSING DATA ICORDILL2 (20160627)<br/>
 
 'MISSING DATA' means that no data was returned by weahter underground.
 
