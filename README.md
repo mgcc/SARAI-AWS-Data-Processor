@@ -8,6 +8,6 @@ The program fetches weather data from 10 stations in succession then sleeps for 
 https://www.wunderground.com/weather/api/
 
 #usage
-java -jar SARAI-AWS-Data-Processor.jar <host> <port>
+java -jar SARAI-AWS-Data-Processor.jar &lt;host&gt; &lt;port&gt;
 
 meteor mongo is usually in 127.0.0.1 3001
