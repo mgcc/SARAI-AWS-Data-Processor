@@ -1,5 +1,5 @@
 dist/
 build/
-nbproject/
+store/
 build.xml
 manifest.mf

@@ -41,17 +41,28 @@ public class MaintenanceTask extends TimerTask{
     int MONTH_CURRENT;
     int DAY_CURRENT;
     
+    MongoClient mongoClient;
+    MongoDatabase db;
+    
     MongoCollection awsCollection;
     MongoCollection weatherData;
     MongoCollection settings;
     
-    private void init() {
-        MongoClient mongoClient = new MongoClient("localhost", 3001); //port should be in args
-        MongoDatabase db = mongoClient.getDatabase("meteor");
+    String host;
+    int port;
     
+    private void init() {
+        mongoClient = new MongoClient(host, port); //port should be in args
+        db = mongoClient.getDatabase("meteor");
+        
         awsCollection = db.getCollection("weather-stations");
         weatherData = db.getCollection("weather-data");
         settings = db.getCollection("dss-settings");
+    }
+    
+    public MaintenanceTask(String host, int port) {
+        this.host = host;
+        this.port = port;
     }
     
     @Override
@@ -64,6 +75,8 @@ public class MaintenanceTask extends TimerTask{
             updateWeatherData();
         } catch (IOException ex) {
             Logger.getLogger(MaintenanceTask.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            mongoClient.close();
         }
         
     }
@@ -157,15 +170,6 @@ public class MaintenanceTask extends TimerTask{
         }
         
         //don't forget to print warnings on API limits
-    }
-    
-    private void maintainData() {
-        System.out.println("Entering maintenance mode");
-        Date date=new Date();
-        Timer timer = new Timer();
-        
-        timer.schedule(new MaintenanceTask(), date, 24*60*60*1000);
-
     }
     
     //@param month zero indexed

@@ -16,11 +16,13 @@ import com.mongodb.client.model.UpdateOptions;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import static java.lang.Integer.parseInt;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -43,8 +45,8 @@ public class SARAIAWSDataProcessor {
      * @param args the command line arguments
      */
     
-    ArrayList<Timer> weatherTimers;
     SimpleDateFormat sdf;
+    
     
     int YEAR_CURRENT;
     int MONTH_CURRENT;
@@ -54,8 +56,14 @@ public class SARAIAWSDataProcessor {
     MongoCollection weatherData;
     MongoCollection settings;
     
-    private void init() {      
-        MongoClient mongoClient = new MongoClient("localhost", 3001); //port should be in args
+    String host;
+    int port;
+    
+    private void init(String host, int port) {
+        this.host = host;
+        this.port = port;
+        
+        MongoClient mongoClient = new MongoClient(host, port); //port should be in args
         MongoDatabase db = mongoClient.getDatabase("meteor");
     
         awsCollection = db.getCollection("weather-stations");
@@ -63,14 +71,14 @@ public class SARAIAWSDataProcessor {
         settings = db.getCollection("dss-settings");
     }
     
-    public SARAIAWSDataProcessor() throws MalformedURLException, IOException {
-        init();
+    public SARAIAWSDataProcessor(String host, int port) throws MalformedURLException, IOException {
+        //init(host, port);
         
-        System.out.println("Starting...");
+        //System.out.println("Starting...");
         
-        updateWeatherData();
+        //updateWeatherData();
         
-        maintainData();
+        maintainData(host, port);
 
     }
     
@@ -166,11 +174,11 @@ public class SARAIAWSDataProcessor {
         //don't forget to print warnings on API limits
     }
     
-    private void maintainData() {
+    private void maintainData(String host, int port) {
         System.out.println("Entering maintenance mode...");
         
         Timer t = new Timer();
-        t.schedule(new MaintenanceTask(), new Date(), 24*60*60*1000);
+        t.schedule(new MaintenanceTask(host, port), new Date(), 24*60*60*1000);
     }
     
     //@param month zero indexed
@@ -354,7 +362,10 @@ public class SARAIAWSDataProcessor {
     }
     
     public static void main(String[] args) throws IOException {
-        SARAIAWSDataProcessor sawsdp = new SARAIAWSDataProcessor();
+        String host = args[0];
+        String port = args[1];
+        
+        SARAIAWSDataProcessor sawsdp = new SARAIAWSDataProcessor(host, parseInt(port));
     }
     
 }
