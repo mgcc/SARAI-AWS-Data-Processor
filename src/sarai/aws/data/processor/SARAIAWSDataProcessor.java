@@ -71,14 +71,14 @@ public class SARAIAWSDataProcessor {
         settings = db.getCollection("dss-settings");
     }
     
-    public SARAIAWSDataProcessor(String host, int port) throws MalformedURLException, IOException {
+    public SARAIAWSDataProcessor(String host, int port, String dbName) throws MalformedURLException, IOException {
         //init(host, port);
         
         //System.out.println("Starting...");
         
         //updateWeatherData();
         
-        maintainData(host, port);
+        maintainData(host, port, dbName);
 
     }
     
@@ -174,11 +174,11 @@ public class SARAIAWSDataProcessor {
         //don't forget to print warnings on API limits
     }
     
-    private void maintainData(String host, int port) {
+    private void maintainData(String host, int port, String dbName) {
         System.out.println("Entering maintenance mode...");
         
         Timer t = new Timer();
-        t.schedule(new MaintenanceTask(host, port), new Date(), 24*60*60*1000);
+        t.schedule(new MaintenanceTask(host, port, dbName), new Date(), 24*60*60*1000);
     }
     
     //@param month zero indexed
@@ -364,8 +364,9 @@ public class SARAIAWSDataProcessor {
     public static void main(String[] args) throws IOException {
         String host = args[0];
         String port = args[1];
+        String dbName = args[2];
         
-        SARAIAWSDataProcessor sawsdp = new SARAIAWSDataProcessor(host, parseInt(port));
+        SARAIAWSDataProcessor sawsdp = new SARAIAWSDataProcessor(host, parseInt(port), dbName);
     }
     
 }

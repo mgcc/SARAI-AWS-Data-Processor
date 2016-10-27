@@ -50,19 +50,21 @@ public class MaintenanceTask extends TimerTask{
     
     String host;
     int port;
+    String dbName;
     
     private void init() {
         mongoClient = new MongoClient(host, port); //port should be in args
-        db = mongoClient.getDatabase("meteor");
+        db = mongoClient.getDatabase(dbName);
         
         awsCollection = db.getCollection("weather-stations");
         weatherData = db.getCollection("weather-data");
         settings = db.getCollection("dss-settings");
     }
     
-    public MaintenanceTask(String host, int port) {
+    public MaintenanceTask(String host, int port, String dbName) {
         this.host = host;
         this.port = port;
+        this.dbName = dbName;
     }
     
     @Override
