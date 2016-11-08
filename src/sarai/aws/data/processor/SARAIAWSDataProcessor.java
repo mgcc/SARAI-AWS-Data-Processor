@@ -366,6 +366,8 @@ public class SARAIAWSDataProcessor {
         String port = args[1];
         String dbName = args[2];
         
+        
+        
         SARAIAWSDataProcessor sawsdp = new SARAIAWSDataProcessor(host, parseInt(port), dbName);
     }
     
