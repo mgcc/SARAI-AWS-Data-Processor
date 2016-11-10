@@ -138,6 +138,7 @@ public class MaintenanceTask extends TimerTask{
                     
                     System.out.println(++totalCalls + ": Updated " + station.get("id") + " (" + apiFormatDate(cd) +")");
                 } catch (NumberFormatException nfe) {
+                    //TODO: REPLACE WITH EMPTY ENTRY
                     System.out.println(++totalCalls + ": MISSING DATA " + station.get("id") + " (" + apiFormatDate(cd) +")");
                 }
                               

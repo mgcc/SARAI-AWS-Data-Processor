@@ -71,15 +71,22 @@ public class SARAIAWSDataProcessor {
         settings = db.getCollection("dss-settings");
     }
     
-    public SARAIAWSDataProcessor(String host, int port, String dbName) throws MalformedURLException, IOException {
-        //init(host, port);
+    public SARAIAWSDataProcessor(String mode, String host, int port, String dbName, String dateString, String stationID) throws MalformedURLException, IOException {
+        if ("update".equals(mode)) {
+            maintainData(host, port, dbName);
+        }
         
-        //System.out.println("Starting...");
+        else if ("fetch".equals(mode)) {
+//            String apiURL = "http://api.wunderground.com/api/" + "key"  + "/history_" + dateString + "/q/pws:" + stationID + ".json";
+            FetchSingle fs = new FetchSingle(host, port, dbName, stationID, dateString);
+            fs.fetch();
+            
+        }
         
-        //updateWeatherData();
+        else if ("fillEmpty".equals(mode)) {
+            
+        }
         
-        maintainData(host, port, dbName);
-
     }
     
     private void updateWeatherData() throws MalformedURLException, IOException {
@@ -362,13 +369,56 @@ public class SARAIAWSDataProcessor {
     }
     
     public static void main(String[] args) throws IOException {
-        String host = args[0];
-        String port = args[1];
-        String dbName = args[2];
+        //defaults
+        String mode = "update"; //update, fetch
+                    
+        String host = "localhost";
+        int port = 3000;
+        String dbName = "meteor";
+            
+        String dateString = "";
+        String stationID = "";
+            
+        for (int a = 0; a < args.length; a+=2) {
+            switch(args[a]) {
+                case "-mode":
+                case "--mode":
+                    mode = args[a+1];
+                    break;
+                
+                case "-host":
+                case "--host":
+                    host = args[a+1];
+                    break;
+                    
+                case "-port":
+                case "--port":
+                    port = parseInt(args[a+1]);
+                    break;
+                    
+                case "-db":
+                case "--db":
+                    dbName = args[a+1];
+                    break;
+                    
+                case "-date":
+                case "--date":
+                    dateString = args[a+1];
+                    break;
+                    
+                case "-id":
+                case "--id":
+                case "-stationID":
+                case "--stationID":
+                    dateString = args[a+1];
+                    break;
+
+            }
+        }
+        
+        SARAIAWSDataProcessor sawsdp = new SARAIAWSDataProcessor(mode, host, port, dbName, dateString, stationID);
         
         
-        
-        SARAIAWSDataProcessor sawsdp = new SARAIAWSDataProcessor(host, parseInt(port), dbName);
     }
     
 }
