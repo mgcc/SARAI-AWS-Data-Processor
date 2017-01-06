@@ -102,7 +102,7 @@ public class MaintenanceTask extends TimerTask{
         MONTH_CURRENT = Calendar.getInstance().get(Calendar.MONTH); //already zero indexed
         DAY_CURRENT = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         
-        System.out.println("Current: " + YEAR_CURRENT + " " + MONTH_CURRENT + " " + DAY_CURRENT);
+        System.out.println("Current: " + YEAR_CURRENT + " " + (MONTH_CURRENT + 1) + " " + DAY_CURRENT);
         
         int count = 0;
         int totalCalls = 0;
@@ -325,7 +325,7 @@ public class MaintenanceTask extends TimerTask{
         int y = (int) lastDate.get("year");
         int m = (int) lastDate.get("month");
         int d = (int) lastDate.get("day");
-                           
+        
         if (d == 28 && m == 1) {
             d = 1;
             m ++;
@@ -337,10 +337,11 @@ public class MaintenanceTask extends TimerTask{
                 if (m == 11) {
                     y++;
                     m = 0;
+                    d = 1;
                 }
                 else {
-                    d = 1;
                     m++;
+                    d = 1;
                 }
             }
             else {

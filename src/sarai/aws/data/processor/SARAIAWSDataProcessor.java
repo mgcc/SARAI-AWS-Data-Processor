@@ -47,17 +47,22 @@ public class SARAIAWSDataProcessor {
     
     SimpleDateFormat sdf;
     
+    private final static String DEFAULT_MODE = "update";
+    private final static String DEFAULT_HOST = "localhost";
+    private final static int DEFAULT_PORT = 3001;
+    private final static String DEFAULT_DB = "meteor";
     
-    int YEAR_CURRENT;
-    int MONTH_CURRENT;
-    int DAY_CURRENT;
     
-    MongoCollection awsCollection;
-    MongoCollection weatherData;
-    MongoCollection settings;
+    private int YEAR_CURRENT;
+    private int MONTH_CURRENT;
+    private int DAY_CURRENT;
     
-    String host;
-    int port;
+    private MongoCollection awsCollection;
+    private MongoCollection weatherData;
+    private MongoCollection settings;
+    
+    private String host;
+    private int port;
     
     private void init(String host, int port) {
         this.host = host;
@@ -80,7 +85,6 @@ public class SARAIAWSDataProcessor {
 //            String apiURL = "http://api.wunderground.com/api/" + "key"  + "/history_" + dateString + "/q/pws:" + stationID + ".json";
             FetchSingle fs = new FetchSingle(host, port, dbName, stationID, dateString);
             fs.fetch();
-            
         }
         
         else if ("fillEmpty".equals(mode)) {
@@ -182,7 +186,7 @@ public class SARAIAWSDataProcessor {
     }
     
     private void maintainData(String host, int port, String dbName) {
-        System.out.println("Entering maintenance mode...");
+        System.out.println("[==MAINTENANCE MODE==]");
         
         Timer t = new Timer();
         t.schedule(new MaintenanceTask(host, port, dbName), new Date(), 24*60*60*1000);
@@ -370,11 +374,11 @@ public class SARAIAWSDataProcessor {
     
     public static void main(String[] args) throws IOException {
         //defaults
-        String mode = "update"; //update, fetch
+        String mode = DEFAULT_MODE; //update, fetch, fillEmpty
                     
-        String host = "localhost";
-        int port = 3000;
-        String dbName = "meteor";
+        String host = DEFAULT_HOST;
+        int port = DEFAULT_PORT;
+        String dbName = DEFAULT_DB;
             
         String dateString = "";
         String stationID = "";
